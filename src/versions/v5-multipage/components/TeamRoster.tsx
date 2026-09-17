@@ -65,7 +65,11 @@ function StaffCard({ member, delay }: { member: TeamMember; delay: number }) {
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             loading="lazy"
             className="absolute inset-0 w-full h-full"
-            imgClassName="absolute inset-0 w-full h-full object-cover object-top"
+            imgClassName={
+              member.slug === "renita"
+                ? "absolute inset-0 w-full h-full object-cover object-[center_40%]"
+                : "absolute inset-0 w-full h-full object-cover object-top"
+            }
           />
         </div>
         <div className="flex flex-col flex-1 p-5">

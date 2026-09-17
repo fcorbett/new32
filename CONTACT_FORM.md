@@ -84,7 +84,7 @@ php scripts/get-gmail-refresh-token.php \
 On **staging** first (`TO` = you), then on production:
 
 1. Open the contact section and submit a test message with your own email.
-2. Confirm the office inbox receives it.
+2. Confirm the configured `TO` inbox receives it (your address on staging; the office on production).
 3. Confirm **Reply** goes to your test address (Reply-To).
 4. Confirm honeypot: if you manually POST with `"website": "http://spam"`, the API returns `{ ok: true }` but no email is sent.
 5. Confirm rate limit: submit repeatedly from the same IP until you see the “please wait” message.
