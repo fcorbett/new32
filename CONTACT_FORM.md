@@ -29,7 +29,7 @@ VITE_FORM_ENDPOINT=https://new32dental.com/api/contact.php
 
 Copy [`.env.example`](.env.example) to `.env.local` for local overrides (`.env.local` is gitignored if you add it).
 
-**Note:** Production must serve the built site **and** `api/` on DreamHost. Use `npm run build` / `build:production` (`base` `/`) for the custom domain; use `npm run build:gh-pages` for the GitHub project site. GitHub Pages is static-only and **cannot** run PHP.
+**Note:** Staging and production must serve the built site **and** `api/` on DreamHost. CI uses `npm run build:production` (`base` `/`). GitHub Pages is not used.
 
 ## One-time Google Cloud / OAuth setup (agency)
 
@@ -59,14 +59,14 @@ php scripts/get-gmail-refresh-token.php \
 
 ## DreamHost configuration
 
-1. Upload the static site build **and** the `api/` folder so that `https://your-domain/api/contact.php` is reachable (PHP enabled).
-2. On the server, copy `api/config.sample.php` → `api/config.php` and fill in:
+1. Deploy via GitHub Actions (push to `main` → staging; promote artifact → production) so `https://your-domain/api/contact.php` is reachable (PHP enabled).
+2. On **each** host (staging and production), copy `api/config.sample.php` → `api/config.php` and fill in:
 
 | Key | Meaning |
 | --- | --- |
 | `FROM` | Agency Workspace address used in the OAuth step |
 | `FROM_NAME` | Display name (e.g. `New32 Website`) |
-| `TO` | new32 office inbox |
+| `TO` | Office inbox on production; your own inbox on staging |
 | `GMAIL_CLIENT_ID` | From Cloud Console |
 | `GMAIL_CLIENT_SECRET` | From Cloud Console |
 | `GMAIL_REFRESH_TOKEN` | From the one-time script |
@@ -81,7 +81,7 @@ php scripts/get-gmail-refresh-token.php \
 
 ## End-to-end test checklist
 
-On the **live DreamHost** site (not GitHub Pages):
+On **staging** first (`TO` = you), then on production:
 
 1. Open the contact section and submit a test message with your own email.
 2. Confirm the office inbox receives it.

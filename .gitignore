@@ -11,8 +11,8 @@ node_modules
 .env.local
 .env.*.local
 
-# Transient SSR build output (removed after prerender)
-docs/.ssr
+# Build output (CI builds and deploys; do not commit)
+docs/
 
 # Contact form secrets & runtime state (DreamHost)
 public/api/config.php

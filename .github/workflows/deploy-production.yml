@@ -1,0 +1,75 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+    inputs:
+      staging_run_id:
+        description: "Run ID of the Deploy staging workflow whose artifact to promote (from the staging job summary or the run URL)"
+        required: true
+        type: string
+      dry_run:
+        description: "Print rsync plan only; do not change production files"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download staging artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-build
+          path: docs
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.staging_run_id }}
+
+      - name: Confirm artifact
+        run: |
+          if [[ ! -f docs/index.html ]]; then
+            echo "Downloaded artifact is missing docs/index.html. Check staging_run_id." >&2
+            exit 1
+          fi
+
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
+
+      - name: Setup SSH
+        env:
+          DREAMHOST_SSH_KEY: ${{ secrets.DREAMHOST_SSH_KEY }}
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DREAMHOST_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$DREAMHOST_HOST" >> ~/.ssh/known_hosts
+
+      - name: Backup production docroot
+        if: ${{ !inputs.dry_run }}
+        env:
+          DREAMHOST_USER: ${{ secrets.DREAMHOST_USER }}
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+        run: ./scripts/backup-docroot.sh "${{ secrets.DREAMHOST_PRODUCTION_PATH }}"
+
+      - name: Rsync to production
+        env:
+          DREAMHOST_USER: ${{ secrets.DREAMHOST_USER }}
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+        run: |
+          extra=()
+          if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+            extra+=(--dry-run)
+          fi
+          ./scripts/rsync-deploy.sh "${extra[@]}" docs "${{ secrets.DREAMHOST_PRODUCTION_PATH }}"

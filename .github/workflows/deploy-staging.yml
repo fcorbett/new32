@@ -1,0 +1,75 @@
+name: Deploy staging
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build:production
+
+      - name: Upload production artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: docs
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Staging robots overlay
+        run: |
+          cp -a docs deploy-staging
+          printf 'User-agent: *\nDisallow: /\n' > deploy-staging/robots.txt
+
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
+
+      - name: Setup SSH
+        env:
+          DREAMHOST_SSH_KEY: ${{ secrets.DREAMHOST_SSH_KEY }}
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DREAMHOST_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$DREAMHOST_HOST" >> ~/.ssh/known_hosts
+
+      - name: Rsync to staging
+        env:
+          DREAMHOST_USER: ${{ secrets.DREAMHOST_USER }}
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+        run: ./scripts/rsync-deploy.sh deploy-staging "${{ secrets.DREAMHOST_STAGING_PATH }}"
+
+      - name: Summary
+        run: |
+          {
+            echo "## Staging deploy"
+            echo
+            echo "Run ID: \`${{ github.run_id }}\`"
+            echo
+            echo "To promote this exact build: **Actions → Deploy production → Run workflow**,"
+            echo "paste this run ID as \`staging_run_id\`."
+            echo
+            echo "Artifact is kept for 14 days."
+          } >> "$GITHUB_STEP_SUMMARY"
