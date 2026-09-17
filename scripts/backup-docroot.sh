@@ -8,7 +8,9 @@ remote_path="${1:?Usage: backup-docroot.sh <remote_path>}"
 : "${DREAMHOST_USER:?DREAMHOST_USER is required}"
 : "${DREAMHOST_HOST:?DREAMHOST_HOST is required}"
 
-ssh "${DREAMHOST_USER}@${DREAMHOST_HOST}" bash -s -- "$remote_path" <<'REMOTE'
+identity="${DREAMHOST_SSH_IDENTITY:-$HOME/.ssh/id_ed25519}"
+ssh -i "$identity" -o IdentitiesOnly=yes -o BatchMode=yes \
+  "${DREAMHOST_USER}@${DREAMHOST_HOST}" bash -s -- "$remote_path" <<'REMOTE'
 set -euo pipefail
 src="${1%/}"
 if [[ ! -d "$src" ]]; then
