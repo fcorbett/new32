@@ -36,7 +36,7 @@ DirectorySlash Off
   # Report-Only on first rollout so GA / Maps can be verified in the console
   # on staging. Switch to Content-Security-Policy (drop -Report-Only) after
   # Home, Our Office, and Contact show zero violations, then promote.
-  Header always set Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-src https://www.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://stats.g.doubleclick.net; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://stats.g.doubleclick.net; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-src https://www.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
 
   # Hashed Vite assets under /assets/ — long-lived immutable
   <If "%{REQUEST_URI} =~ m#^/assets/#">
