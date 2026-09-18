@@ -7,16 +7,20 @@ import { Breadcrumbs } from "../components/Breadcrumbs";
 import { JsonLd } from "../components/JsonLd";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { useVersionPath } from "../hooks/useVersionPath";
-import { canonicalUrl } from "../content/schema";
+import { absoluteAssetUrl, canonicalUrl } from "../content/schema";
 
 export function GalleryPage() {
   const homeTo = useVersionPath();
+  const galleryImages = galleryPage.sections.flatMap((section) =>
+    section.photos.map((photo) => absoluteAssetUrl(photo.picture.img.src)),
+  );
   const schema = {
     "@context": "https://schema.org",
     "@type": "ImageGallery",
     name: "new32 Gallery",
     description: galleryPage.seo.description,
     url: canonicalUrl("/gallery"),
+    image: galleryImages,
   };
 
   return (
@@ -54,7 +58,10 @@ export function GalleryPage() {
                       picture={photo.picture}
                       alt={photo.alt}
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      loading="lazy"
+                      loading={sIndex === 0 && i === 0 ? "eager" : "lazy"}
+                      fetchpriority={
+                        sIndex === 0 && i === 0 ? "high" : undefined
+                      }
                       className="absolute inset-0 w-full h-full"
                       imgClassName="absolute inset-0 w-full h-full object-cover"
                     />

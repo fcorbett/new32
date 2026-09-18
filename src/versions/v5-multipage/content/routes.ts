@@ -22,8 +22,14 @@ export function routerLocationForPath(path: string, basePath: string): string {
   return `${base}/${path}`;
 }
 
-/** Output HTML path under docs/ for a public path. */
+/**
+ * Output HTML path under docs/ for a public path.
+ * Nested sections (currently `/about` + bios) must use `about/index.html`
+ * so Apache can serve `/about` from a real directory without colliding
+ * with `about.html`.
+ */
 export function htmlOutPath(path: string): string {
   if (!path) return "index.html";
+  if (path === "about") return "about/index.html";
   return `${path}.html`;
 }

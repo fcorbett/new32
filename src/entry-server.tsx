@@ -12,6 +12,7 @@ import {
   publicPaths,
   routerLocationForPath,
 } from "./versions/v5-multipage/content/routes";
+import { SITEMAP_LASTMOD } from "./versions/v5-multipage/content/schema";
 
 const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
 
@@ -25,6 +26,7 @@ export {
   publicPaths,
   routerLocationForPath,
   serializeHeadTags,
+  SITEMAP_LASTMOD,
 };
 
 /** Server render of the production multipage app for a given URL path. */

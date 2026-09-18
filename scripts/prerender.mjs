@@ -82,6 +82,7 @@ async function main() {
     htmlOutPath,
     routerLocationForPath,
     serializeHeadTags,
+    SITEMAP_LASTMOD,
   } = await import(pathToFileURL(ssrEntry).href);
 
   const template = fs.readFileSync(indexPath, "utf-8");
@@ -114,6 +115,12 @@ async function main() {
       console.error("404 prerender missing noindex robots meta");
       process.exit(1);
     }
+    if (job.notFound && head.canonical !== "https://new32dental.com/") {
+      console.error(
+        `404 prerender canonical must be the homepage (got "${head.canonical}")`,
+      );
+      process.exit(1);
+    }
 
     let html = injectRoot(template, appHtml);
     html = injectHead(html, serializeHeadTags(head));
@@ -128,11 +135,22 @@ async function main() {
     console.log(`Prerendered ${location} → docs/${job.out}`);
   }
 
+  const aboutIndex = path.resolve(docsDir, "about/index.html");
+  const aboutHtml = path.resolve(docsDir, "about.html");
+  if (!fs.existsSync(aboutIndex)) {
+    console.error("docs/about/index.html missing — htmlOutPath('about') is wrong");
+    process.exit(1);
+  }
+  if (fs.existsSync(aboutHtml)) {
+    console.error("docs/about.html must not exist (collides with about/ directory)");
+    process.exit(1);
+  }
+
   const sitemapUrls = paths.map((p) => {
     const loc = p
       ? `https://new32dental.com/${p}`
       : "https://new32dental.com/";
-    return `  <url><loc>${loc}</loc></url>`;
+    return `  <url><loc>${loc}</loc><lastmod>${SITEMAP_LASTMOD}</lastmod></url>`;
   });
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

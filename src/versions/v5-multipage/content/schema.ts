@@ -8,6 +8,8 @@ import { reviewsV1 } from "../../../content/reviewsV1";
 
 export const SITE_ORIGIN = "https://new32dental.com";
 export const SITE_NAME = "new32 Cosmetic and Family Dentistry";
+/** W3C date for sitemap lastmod (matches siteFacts.lastUpdated: May 2026). */
+export const SITEMAP_LASTMOD = "2026-05-01";
 
 export const OG_IMAGE_URL = `${SITE_ORIGIN}/og-image.jpg`;
 export const OG_IMAGE_WIDTH = 1200;
@@ -75,7 +77,6 @@ export function dentistSchema(pageUrl?: string) {
     sameAs: [
       reviews.google.url,
       reviewsV1.yelp.url,
-      reviewsV1.facebook.url,
       location.googlePlacesUrl,
     ],
   };

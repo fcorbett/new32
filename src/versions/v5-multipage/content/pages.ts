@@ -244,19 +244,19 @@ export const galleryPage: {
     {
       heading: "Our office",
       photos: [
-        { picture: imgOffice1, alt: "new32 office interior" },
-        { picture: imgOffice2, alt: "new32 office interior" },
-        { picture: imgOffice3, alt: "new32 office interior" },
-        { picture: imgOffice4, alt: "new32 office interior" },
+        { picture: imgOffice1, alt: "new32 treatment room at Northcut Landing" },
+        { picture: imgOffice2, alt: "new32 reception and waiting area" },
+        { picture: imgOffice3, alt: "new32 operatory with natural light" },
+        { picture: imgOffice4, alt: "Hallway and consult space at new32 Seattle" },
       ],
     },
     {
       heading: "Before & after",
       photos: [
-        { picture: imgBeforeAfter1, alt: "Before and after smile at new32" },
-        { picture: imgBeforeAfter2, alt: "Before and after smile at new32" },
-        { picture: imgBeforeAfter3, alt: "Before and after smile at new32" },
-        { picture: imgBeforeAfter4, alt: "Before and after smile at new32" },
+        { picture: imgBeforeAfter1, alt: "Before and after smile restoration at new32" },
+        { picture: imgBeforeAfter2, alt: "Before and after cosmetic dentistry at new32" },
+        { picture: imgBeforeAfter3, alt: "Before and after whitening results at new32" },
+        { picture: imgBeforeAfter4, alt: "Before and after smile makeover at new32" },
       ],
     },
   ],

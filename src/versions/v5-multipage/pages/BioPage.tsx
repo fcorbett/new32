@@ -78,7 +78,8 @@ export function BioPage() {
                   picture={member.image}
                   alt={`${member.name}, ${member.roleLabel} at new32`}
                   sizes="280px"
-                  loading="lazy"
+                  loading="eager"
+                  fetchpriority="high"
                   className="absolute inset-0 w-full h-full"
                   imgClassName="absolute inset-0 w-full h-full object-cover object-top"
                 />

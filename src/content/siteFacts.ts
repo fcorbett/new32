@@ -33,7 +33,7 @@ const address = "4915 25th Ave NE, Suite 107, Seattle, WA 98105";
 
 export const location = {
   address,
-  addressDisplay: "4915 25th Avenue Northeast #107, Seattle, WA 98105",
+  addressDisplay: "4915 25th Ave NE, Suite 107, Seattle, WA 98105",
   parkingNote:
     "Located in Northcut Landing's West building with onsite underground parking.",
   mapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`,

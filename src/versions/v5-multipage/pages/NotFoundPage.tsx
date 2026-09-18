@@ -13,6 +13,7 @@ export function NotFoundPage() {
         title="Page not found | new32 Cosmetic and Family Dentistry"
         description="The page you requested could not be found. Visit new32 Cosmetic and Family Dentistry in Seattle or contact us to schedule."
         robots="noindex, follow"
+        canonical="https://new32dental.com/"
       />
       <div className="w-full px-6 md:px-16 py-20 md:py-28">
         <div className="pnw-container max-w-[40rem]">

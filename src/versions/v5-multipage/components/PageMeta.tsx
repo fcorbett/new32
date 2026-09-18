@@ -8,15 +8,22 @@ type PageMetaProps = {
   description: string;
   /** e.g. "noindex, follow" for 404 */
   robots?: string;
+  /** Override pathname-derived canonical (404 points at the homepage). */
+  canonical?: string;
 };
 
 /**
  * Sets document head for SEO/AEO/sharing.
  * During SSR, writes into HeadProvider bag; on the client, syncs the DOM.
  */
-export function PageMeta({ title, description, robots }: PageMetaProps) {
+export function PageMeta({
+  title,
+  description,
+  robots,
+  canonical: canonicalOverride,
+}: PageMetaProps) {
   const { pathname } = useLocation();
-  const canonical = canonicalUrl(pathname);
+  const canonical = canonicalOverride ?? canonicalUrl(pathname);
   const { head, setHead } = useHead();
 
   const patch = {
