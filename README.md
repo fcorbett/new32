@@ -39,4 +39,4 @@ Apache `.htaccess` in the build handles SPA deep links and legacy WordPress redi
 
 ## Contact form
 
-The contact form posts to a DreamHost PHP endpoint and emails the office inbox via Gmail SMTP (OAuth2). Full setup (Google Cloud, refresh token, DreamHost `config.php`, testing): see [CONTACT_FORM.md](CONTACT_FORM.md).
+The contact form posts to a DreamHost PHP endpoint and emails via Gmail SMTP (Google App Password on the agency Workspace). Full setup (`config.php`, staging vs production `TO`/`BCC`, testing): see [CONTACT_FORM.md](CONTACT_FORM.md).

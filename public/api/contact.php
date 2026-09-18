@@ -5,10 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/vendor/PHPMailer/PHPMailer/src/Exception.php';
 require __DIR__ . '/vendor/PHPMailer/PHPMailer/src/PHPMailer.php';
 require __DIR__ . '/vendor/PHPMailer/PHPMailer/src/SMTP.php';
-require __DIR__ . '/vendor/PHPMailer/PHPMailer/src/OAuthTokenProvider.php';
-require __DIR__ . '/lib/GoogleOAuthTokenProvider.php';
 
-use New32\Contact\GoogleOAuthTokenProvider;
 use PHPMailer\PHPMailer\Exception as MailException;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -238,9 +235,7 @@ if (!check_rate_limit($storageDir, client_ip(), max(1, $max), max(60, $window)))
 $requiredKeys = [
     'FROM',
     'TO',
-    'GMAIL_CLIENT_ID',
-    'GMAIL_CLIENT_SECRET',
-    'GMAIL_REFRESH_TOKEN',
+    'SMTP_PASSWORD',
 ];
 foreach ($requiredKeys as $key) {
     if (empty($config[$key]) || !is_string($config[$key])) {
@@ -254,6 +249,15 @@ foreach ($requiredKeys as $key) {
 $from = (string) $config['FROM'];
 $fromName = (string) ($config['FROM_NAME'] ?? 'New32 Website');
 $to = (string) $config['TO'];
+$smtpUser = trim((string) ($config['SMTP_USER'] ?? ''));
+if ($smtpUser === '') {
+    $smtpUser = $from;
+}
+$smtpPassword = (string) $config['SMTP_PASSWORD'];
+$bccRaw = trim((string) ($config['BCC'] ?? ''));
+$bccList = $bccRaw === ''
+    ? []
+    : array_values(array_filter(array_map('trim', explode(',', $bccRaw))));
 
 $fullName = $firstName . ' ' . $lastName;
 $subject = 'Website contact from ' . $fullName;
@@ -283,20 +287,15 @@ try {
     $mail->Port = 587;
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->SMTPAuth = true;
-    $mail->AuthType = 'XOAUTH2';
+    $mail->Username = $smtpUser;
+    $mail->Password = $smtpPassword;
     $mail->CharSet = 'UTF-8';
-
-    $mail->setOAuth(
-        new GoogleOAuthTokenProvider(
-            $from,
-            (string) $config['GMAIL_CLIENT_ID'],
-            (string) $config['GMAIL_CLIENT_SECRET'],
-            (string) $config['GMAIL_REFRESH_TOKEN']
-        )
-    );
 
     $mail->setFrom($from, $fromName);
     $mail->addAddress($to);
+    foreach ($bccList as $bcc) {
+        $mail->addBCC($bcc);
+    }
     $mail->addReplyTo($email, $fullName);
     $mail->Subject = $subject;
     $mail->Body = $body;

@@ -2,6 +2,7 @@
 <?php
 
 /**
+ * Unused leftover from an OAuth prototype. Contact mail uses a Google App Password instead.
  * One-time local helper: exchange a Google OAuth authorization code for a refresh token.
  *
  * Prerequisites:

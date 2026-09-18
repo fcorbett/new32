@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * Unused leftover from an OAuth prototype. Contact mail uses SMTP App Password instead.
  * Minimal OAuth2 token provider for Gmail SMTP (XOAUTH2).
  * Refreshes access tokens via Google's token endpoint — no League OAuth package required.
  */

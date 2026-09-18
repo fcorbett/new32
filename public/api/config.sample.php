@@ -4,22 +4,26 @@
  * Copy this file to config.php on the DreamHost server and fill in real values.
  * config.php is gitignored — never commit secrets.
  *
- * FROM must be the agency Google Workspace address that completed the OAuth flow.
- * TO is the new32 office inbox that should receive form submissions.
+ * FROM / SMTP_USER must be the Google Workspace address that owns the App Password.
+ * TO is who receives submissions. BCC is optional (comma-separated).
  */
 
 return [
-    // Agency Workspace address authorized via OAuth (also used as SMTP From)
+    // Workspace address that sends via smtp.gmail.com (also used as SMTP From)
     'FROM' => 'you@your-agency.com',
     'FROM_NAME' => 'New32 Website',
 
     // Where submissions are delivered
-    'TO' => 'office@new32dental.com',
+    'TO' => 'you@your-agency.com',
 
-    // Google Cloud OAuth client (Desktop app type recommended)
-    'GMAIL_CLIENT_ID' => 'xxxxxxxx.apps.googleusercontent.com',
-    'GMAIL_CLIENT_SECRET' => 'xxxxxxxx',
-    'GMAIL_REFRESH_TOKEN' => 'xxxxxxxx',
+    // Optional: comma-separated extra recipients (empty on staging)
+    // Production example:
+    // 'BCC' => 'drshaw@new32dental.com,drjacobsen@new32dental.com,Elizabetheshaw@gmail.com,info@new32dental.com',
+    'BCC' => '',
+
+    // Gmail SMTP. SMTP_USER defaults to FROM if left empty.
+    'SMTP_USER' => '',
+    'SMTP_PASSWORD' => 'xxxx xxxx xxxx xxxx',
 
     // Optional: comma-separated Allowed Origins for CORS (leave empty to omit CORS headers)
     // Example: 'https://new32dental.com,https://www.new32dental.com'

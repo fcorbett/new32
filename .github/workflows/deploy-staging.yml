@@ -54,40 +54,12 @@ jobs:
           printf '%s\n' "$DREAMHOST_SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "$DREAMHOST_HOST" >> ~/.ssh/known_hosts
-          # #region agent log
-          key_size=$(wc -c < ~/.ssh/id_ed25519 | tr -d ' ')
-          key_lines=$(wc -l < ~/.ssh/id_ed25519 | tr -d ' ')
-          parseable=0
-          if ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null 2>&1; then parseable=1; fi
-          first_line=$(head -n1 ~/.ssh/id_ed25519 | tr -d '\r')
-          case "$first_line" in
-            '-----BEGIN OPENSSH PRIVATE KEY-----') key_kind=openssh ;;
-            '-----BEGIN '*) key_kind=pem ;;
-            '') key_kind=empty ;;
-            *) key_kind=other ;;
-          esac
-          line=$(printf '{"sessionId":"2afe34","runId":"post-fix","hypothesisId":"B","location":"deploy-staging.yml:Setup SSH","message":"key written","data":{"key_size":%s,"key_lines":%s,"parseable":%s,"key_kind":"%s","host_len":%s},"timestamp":%s}\n' "$key_size" "$key_lines" "$parseable" "$key_kind" "${#DREAMHOST_HOST}" "$(date +%s000)")
-          echo "$line"
-          mkdir -p "${GITHUB_WORKSPACE}/.cursor"
-          printf '%s\n' "$line" >> "${GITHUB_WORKSPACE}/.cursor/debug-2afe34.log"
-          # #endregion
 
       - name: Rsync to staging
         env:
           DREAMHOST_USER: ${{ secrets.DREAMHOST_USER }}
           DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
-          DEBUG_LOG_PATH: ${{ github.workspace }}/.cursor/debug-2afe34.log
-          DEBUG_RUN_ID: post-fix
         run: ./scripts/rsync-deploy.sh deploy-staging "${{ secrets.DREAMHOST_STAGING_PATH }}"
-
-      - name: Upload debug log
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: debug-2afe34
-          path: .cursor/debug-2afe34.log
-          if-no-files-found: ignore
-          retention-days: 7
 
       - name: Summary
         run: |
