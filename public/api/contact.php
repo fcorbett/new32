@@ -297,9 +297,9 @@ try {
         $mail->addBCC($bcc);
     }
     $mail->addReplyTo($email, $fullName);
+    $mail->isHTML(false);
     $mail->Subject = $subject;
     $mail->Body = $body;
-    $mail->AltBody = $body;
 
     $mail->send();
 
