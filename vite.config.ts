@@ -81,6 +81,44 @@ function heroImagePreload(): Plugin {
   }
 }
 
+/**
+ * Inlines the built CSS into index.html so the stylesheet is not render-blocking.
+ * Safe while the bundle stays small (~7 KiB); prerender copies this into every route.
+ */
+function inlineCriticalCss(): Plugin {
+  return {
+    name: 'inline-critical-css',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        const bundle = ctx.bundle
+        if (!bundle) return html
+
+        return html.replace(
+          /<link\s+rel="stylesheet"[^>]*href="([^"]+\.css)"[^>]*>/g,
+          (match, href: string) => {
+            const assetKey = Object.keys(bundle).find(
+              (k) =>
+                k.endsWith('.css') &&
+                (href.endsWith(k) || href.endsWith(`/${k}`)),
+            )
+            if (!assetKey) return match
+            const asset = bundle[assetKey]
+            if (!asset || asset.type !== 'asset') return match
+            const source =
+              typeof asset.source === 'string'
+                ? asset.source
+                : Buffer.from(asset.source).toString('utf8')
+            const escaped = source.replace(/<\/style/gi, '<\\/style')
+            return `<style>${escaped}</style>`
+          },
+        )
+      },
+    },
+  }
+}
+
 export default defineConfig({
   base: resolveBase(),
   build: {
@@ -109,6 +147,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     heroImagePreload(),
+    inlineCriticalCss(),
   ],
   resolve: {
     alias: {

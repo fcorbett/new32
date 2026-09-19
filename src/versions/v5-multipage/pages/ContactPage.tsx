@@ -13,6 +13,7 @@ import { CallBand } from "../components/CallBand";
 import { CallCta } from "../components/CallCta";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { JsonLd } from "../components/JsonLd";
+import { LazyMapEmbed } from "../components/LazyMapEmbed";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { dentistSchema, canonicalUrl } from "../content/schema";
 import { useVersionPath } from "../hooks/useVersionPath";
@@ -88,16 +89,11 @@ export function ContactPage() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.1}>
-              <div className="relative min-h-[280px] h-full bg-[var(--pnw-stone)] border border-[var(--pnw-border)] overflow-hidden">
-                <iframe
-                  title="Map to new32 Cosmetic and Family Dentistry"
-                  src={location.mapsEmbedUrl}
-                  className="absolute inset-0 w-full h-full border-0"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-              </div>
+              <LazyMapEmbed
+                src={location.mapsEmbedUrl}
+                title="Map to new32 Cosmetic and Family Dentistry"
+                className="relative min-h-[280px] h-full bg-[var(--pnw-stone)] border border-[var(--pnw-border)] overflow-hidden"
+              />
             </ScrollReveal>
           </div>
         </div>

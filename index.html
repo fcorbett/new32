@@ -14,9 +14,16 @@
     />
     <link rel="icon" href="%BASE_URL%new32-seattle-dentistry-logo.svg" type="image/svg+xml" />
     <!--
-      Preload fonts used above the fold (nav 500, UI semibold 600, display headings 400).
-      Starts download in parallel with CSS so Lighthouse critical-path chains stay short.
+      Preload fonts used above the fold so downloads start with HTML (not after CSS).
+      Inter 400 body, 500 nav, 600 UI; Cormorant 400 h1, 500 section headings.
     -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="%BASE_URL%fonts/inter-latin-400-normal.woff2"
+      crossorigin
+    />
     <link
       rel="preload"
       as="font"
@@ -38,7 +45,14 @@
       href="%BASE_URL%fonts/cormorant-garamond-latin-400-normal.woff2"
       crossorigin
     />
-    <!-- Google Analytics deferred until window load (see end of body) -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="%BASE_URL%fonts/cormorant-garamond-latin-500-normal.woff2"
+      crossorigin
+    />
+    <!-- Google Analytics: first interaction or 8s fallback (see end of body) -->
     <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
   </head>
 
@@ -49,7 +63,13 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       window.gtag = gtag;
+      var gtagLoaded = false;
       function loadGtag() {
+        if (gtagLoaded) return;
+        gtagLoaded = true;
+        window.removeEventListener('pointerdown', loadGtag);
+        window.removeEventListener('keydown', loadGtag);
+        window.removeEventListener('scroll', loadGtag);
         var s = document.createElement('script');
         s.async = true;
         s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PQ3X8RDYHS';
@@ -60,13 +80,10 @@
         };
         document.head.appendChild(s);
       }
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(loadGtag, { timeout: 4000 });
-      } else {
-        window.addEventListener('load', function () {
-          setTimeout(loadGtag, 1);
-        });
-      }
+      window.addEventListener('pointerdown', loadGtag, { once: true, passive: true });
+      window.addEventListener('keydown', loadGtag, { once: true });
+      window.addEventListener('scroll', loadGtag, { once: true, passive: true });
+      setTimeout(loadGtag, 8000);
     </script>
   </body>
 </html>
