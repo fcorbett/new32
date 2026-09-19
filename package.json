@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "build": "vite build && vite build --ssr src/entry-server.tsx --outDir docs/.ssr --emptyOutDir && node scripts/prerender.mjs && rm -rf docs/.ssr",
-    "build:gh-pages": "VITE_BASE_PATH=/New32samplehomepage/ npm run build",
     "build:production": "VITE_BASE_PATH=/ npm run build",
     "dev": "vite --open /",
     "preview": "vite preview --open /"

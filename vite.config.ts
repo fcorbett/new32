@@ -6,8 +6,7 @@ import { imagetools } from 'vite-imagetools'
 
 /**
  * Resolve Vite `base` from VITE_BASE_PATH.
- * - unset / empty / "/" → domain root (DreamHost / custom domain)
- * - "/New32samplehomepage" or "New32samplehomepage/" → project-pages path
+ * Unset / empty / "/" → domain root (DreamHost staging/production).
  */
 function resolveBase(): string {
   const raw = process.env.VITE_BASE_PATH

@@ -26,7 +26,7 @@ export function canonicalUrl(path = "/"): string {
 
 /**
  * Absolute production URL for a Vite asset path.
- * Strips the Vite base prefix so GH Pages builds still emit new32dental.com URLs.
+ * Strips any Vite base prefix so schema always uses new32dental.com URLs.
  */
 export function absoluteAssetUrl(src: string): string {
   if (src.startsWith("http://") || src.startsWith("https://")) return src;

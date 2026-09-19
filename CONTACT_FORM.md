@@ -29,7 +29,7 @@ VITE_FORM_ENDPOINT=https://new32dental.com/api/contact.php
 
 Copy [`.env.example`](.env.example) to `.env.local` for local overrides (`.env.local` is gitignored if you add it).
 
-**Note:** Staging and production must serve the built site **and** `api/` on DreamHost. CI uses `npm run build:production` (`base` `/`). GitHub Pages is not used.
+**Note:** Staging and production must serve the built site **and** `api/` on DreamHost. CI uses `npm run build:production` (`base` `/`).
 
 ## One-time Google App Password (agency Workspace)
 
